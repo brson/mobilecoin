@@ -146,7 +146,7 @@ impl ConsensusEnclave for SgxConsensusEnclave {
 
         match sealed_key {
             Some(sealed) => {
-                let cached = IntelSealed::try_from(sealed.clone()).unwrap();
+                let cached = IntelSealed::try_from(sealed.clone())?;
                 let (key, _mac) = cached.unseal_raw()?;
                 let mut lock = self.ake.get_identity().signing_keypair.lock().unwrap();
                 *lock = Ed25519Pair::try_from(&key[..]).unwrap();

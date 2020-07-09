@@ -9,6 +9,7 @@ use alloc::vec::Vec;
 use core::convert::TryFrom;
 use failure::Fail;
 use prost::Message;
+use serde::{Deserialize, Serialize};
 
 /// A `Sealed<T>` is a Sealed representation of a T, with some additional
 /// mac text which has been computed from T and whcih is visible.
@@ -180,7 +181,7 @@ pub fn get_add_mac_txt_offset(sealed_data: &[u8]) -> Result<u32, ParseSealedErro
     Ok(result)
 }
 
-#[derive(Debug, Clone, Eq, PartialEq, Fail)]
+#[derive(Debug, Clone, Eq, PartialEq, PartialOrd, Fail, Deserialize, Serialize)]
 pub enum ParseSealedError {
     /// The bytes were too short to contain a sgx_sealed_data_t header
     #[fail(

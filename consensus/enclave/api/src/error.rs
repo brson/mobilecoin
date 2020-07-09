@@ -4,7 +4,7 @@
 
 use alloc::string::String;
 use failure::Fail;
-use mc_attest_core::SgxError;
+use mc_attest_core::{SgxError, ParseSealedError};
 use mc_attest_enclave_api::Error as AttestEnclaveError;
 use mc_crypto_keys::Ed25519SignatureError;
 use mc_crypto_message_cipher::CipherError as MessageCipherError;
@@ -22,6 +22,10 @@ pub enum Error {
     /// A call to the SGX SDK has failed
     #[fail(display = "Error communicating with SGX: {}", _0)]
     Sgx(SgxError),
+
+    /// Parsing a sealed block signing key
+    #[fail(display = "Error parsing sealed block signing key: {}", _0)]
+    ParseSealed(ParseSealedError),
 
     /// Error with attestation or ake
     #[fail(display = "Attested AKE error: {}", _0)]
@@ -71,6 +75,12 @@ impl<T> From<PoisonError<T>> for Error {
 impl From<SgxError> for Error {
     fn from(src: SgxError) -> Self {
         Error::Sgx(src)
+    }
+}
+
+impl From<ParseSealedError> for Error {
+    fn from(src: ParseSealedError) -> Self {
+        Error::ParseSealed(src)
     }
 }
 
